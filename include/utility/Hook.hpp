@@ -133,10 +133,16 @@ namespace indigo
 			return true;
 		}
 
-		template <typename _TFunction>
-		_TFunction Get()
+		template <typename _TType>
+		_TType GetOriginal()
 		{
-			return static_cast<_TFunction>(mOriginal);
+			return static_cast<_TType>(mOriginal);
+		}
+
+		template <typename _TType>
+		_TType GetRedirect()
+		{
+			return static_cast<_TType>(mRedirect);
 		}
 	};
 
@@ -197,10 +203,16 @@ namespace indigo
 			return true;
 		}
 
-		template <typename _TFunction>
-		_TFunction Get()
+		template <typename _TType>
+		_TType GetOriginal()
 		{
-			return static_cast<_TFunction>(mOriginal);
+			return static_cast<_TType>(mOriginal);
+		}
+
+		template <typename _TType>
+		_TType GetRedirect()
+		{
+			return static_cast<_TType>(mRedirect);
 		}
 	};
 
@@ -257,10 +269,16 @@ namespace indigo
 			return true;
 		}
 
-		template <typename _TFunction>
-		_TFunction Get()
+		template <typename _TType>
+		_TType GetOriginal()
 		{
-			return static_cast<_TFunction>(mOriginal);
+			return static_cast<_TType>(mOriginal);
+		}
+
+		template <typename _TType>
+		_TType GetRedirect()
+		{
+			return static_cast<_TType>(mRedirect);
 		}
 	};
 }
