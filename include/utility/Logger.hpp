@@ -81,7 +81,7 @@ namespace indigo
 			mLevel = level;
 		}
 
-		void Write(LogType type, std::string className, std::string format, ...)
+		void Write(LogType type, const std::string &className, std::string format, ...)
 		{
 			va_list arguments;
 			va_start(arguments, format);

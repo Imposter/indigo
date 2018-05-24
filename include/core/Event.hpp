@@ -20,7 +20,7 @@ namespace indigo
 	class Event
 	{
 		std::mutex mEventMutex;
-		std::vector<std::function<bool(_TArgs ...)>> mCallbacks;
+		std::vector<std::function<void(_TArgs ...)>> mCallbacks;
 
 	public:
 		Event() { }
@@ -54,25 +54,21 @@ namespace indigo
 			return *this;
 		}
 
-		bool Trigger(_TArgs ... arguments)
+		void Trigger(_TArgs ... arguments)
 		{
-			bool success = true;
-			std::vector<std::function<bool(_TArgs ...)>> callbacks(mCallbacks.size());
+			std::vector<std::function<void(_TArgs ...)>> callbacks(mCallbacks.size());
 
 			mEventMutex.lock();
 			std::copy(mCallbacks.begin(), mCallbacks.end(), callbacks.begin());
 			mEventMutex.unlock();
 
 			for (auto iterator = callbacks.begin(); iterator != callbacks.end(); ++iterator)
-				if (!(*iterator)(arguments...))
-					success = false;
-
-			return success;
+				(*iterator)(arguments...);
 		}
 
-		bool operator()(_TArgs ... arguments)
+		void operator()(_TArgs ... arguments)
 		{
-			return Trigger(arguments...);
+			Trigger(arguments...);
 		}
 	};
 }

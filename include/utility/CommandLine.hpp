@@ -12,6 +12,7 @@
 #include "../Build.hpp"
 #include <map>
 #include <stdint.h>
+#include <utility>
 #include <vector>
 #include <string>
 
@@ -102,15 +103,15 @@ namespace indigo
 
 		static void Parse(std::string commandLine)
 		{
-			Parse(convertToArgv(commandLine));
+			Parse(convertToArgv(std::move(commandLine)));
 		}
 
-		static bool FlagExists(std::string keyName)
+		static bool FlagExists(const std::string &keyName)
 		{
 			return mArguments.find(keyName) != mArguments.end();
 		}
 
-		static int64_t GetInteger(std::string keyName, int64_t defaultValue)
+		static int64_t GetInteger(const std::string &keyName, int64_t defaultValue)
 		{
 			auto value = mArguments.find(keyName);
 			if (value == mArguments.end())
@@ -119,7 +120,7 @@ namespace indigo
 			return stoull(value->second, nullptr, 0);
 		}
 
-		static std::string GetString(std::string keyName, std::string defaultValue)
+		static std::string GetString(const std::string &keyName, std::string defaultValue)
 		{
 			auto value = mArguments.find(keyName);
 			if (value == mArguments.end())

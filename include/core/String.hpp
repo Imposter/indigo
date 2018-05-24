@@ -9,6 +9,7 @@
 #ifndef indigo_string_hpp_
 #define indigo_string_hpp_
 
+#include <utility>
 #include <vector>
 #include <stdarg.h>
 #include <codecvt>
@@ -36,7 +37,7 @@ namespace indigo
 			return true;
 		}
 
-		static bool Contains(std::string target, std::string contains)
+		static bool Contains(const std::string &target, const std::string &contains)
 		{
 			return strstr(target.c_str(), contains.c_str()) != nullptr;
 		}
@@ -66,7 +67,7 @@ namespace indigo
 			return result;
 		}
 
-		static std::string PadLeft(std::string target, char character, size_t count)
+		static std::string PadLeft(const std::string &target, char character, size_t count)
 		{
 			std::string output;
 
@@ -77,7 +78,7 @@ namespace indigo
 			return output;
 		}
 
-		static std::string PadRight(std::string target, char character, size_t count)
+		static std::string PadRight(const std::string &target, char character, size_t count)
 		{
 			std::string output = target;
 
@@ -87,9 +88,9 @@ namespace indigo
 			return output;
 		}
 
-		static std::string Replace(std::string source, std::string from, std::string to, bool ignoreCase = false)
+		static std::string Replace(std::string source, std::string from, const std::string &to, bool ignoreCase = false)
 		{
-			std::string output = source;
+			std::string output = std::move(source);
 
 			for (size_t x = 0; x < output.size(); x++)
 			{
@@ -119,9 +120,9 @@ namespace indigo
 			return output;
 		}
 
-		static std::vector<std::string> Split(std::string source, std::string split)
+		static std::vector<std::string> Split(std::string source, const std::string &split)
 		{
-			std::string input = source;
+			std::string input = std::move(source);
 			std::vector<std::string> output;
 
 			size_t i;
@@ -136,13 +137,13 @@ namespace indigo
 			return output;
 		}
 
-		static std::wstring ToWideString(std::string string)
+		static std::wstring ToWideString(const std::string &string)
 		{
 			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> utf16conv;
 			return utf16conv.from_bytes(string);
 		}
 
-		static std::string ToString(std::wstring string)
+		static std::string ToString(const std::wstring &string)
 		{
 			std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> utf8conv;
 			return utf8conv.to_bytes(string);

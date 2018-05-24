@@ -19,7 +19,7 @@ namespace indigo
 {
 	bool Console::mAllocated;
 
-	void Console::Show(std::string title)
+	void Console::Show(const std::string &title)
 	{
 		if (!mAllocated)
 		{

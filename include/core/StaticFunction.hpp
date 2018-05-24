@@ -18,12 +18,12 @@ namespace indigo
 		std::function<void()> mShutdownFunction;
 
 	public:
-		StaticFunction(std::function<void()> startupFunction)
+		StaticFunction(const std::function<void()> &startupFunction)
 		{
 			startupFunction();
 		}
 
-		StaticFunction(std::function<void()> startup_function, std::function<void()> shutdownFunction)
+		StaticFunction(const std::function<void()> &startup_function, std::function<void()> shutdownFunction)
 			: mShutdownFunction(shutdownFunction)
 		{
 			startup_function();

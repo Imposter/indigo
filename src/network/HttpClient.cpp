@@ -41,7 +41,7 @@ namespace indigo
 		return static_cast<HttpClient *>(obj)->writeCallback(data, size, count);
 	}
 
-	HttpClient::HttpClient(std::string userAgent)
+	HttpClient::HttpClient(const std::string &userAgent)
 		: mCurl(nullptr), mObject()
 	{
 		mCurl = curl_easy_init();
@@ -53,7 +53,7 @@ namespace indigo
 		curl_easy_cleanup(mCurl);
 	}
 
-	bool HttpClient::DownloadData(std::ostream *object, std::string url, std::map<std::string, std::string> headers, bool sslVerify)
+	bool HttpClient::DownloadData(std::ostream *object, const std::string &url, std::map<std::string, std::string> headers, bool sslVerify)
 	{
 		mMutex.lock();
 

@@ -19,7 +19,7 @@ namespace indigo
 		static bool mAllocated;
 
 	public:
-		static void Show(std::string title = "Console");
+		static void Show(const std::string &title = "Console");
 		static void Hide();
 	};
 }

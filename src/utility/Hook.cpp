@@ -57,7 +57,7 @@ namespace indigo
 	{
 		IMAGE_NT_HEADERS *ntHeaders = Memory::GetNTHeader(module);
 		IMAGE_DATA_DIRECTORY *importDirectory = &ntHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
-		IMAGE_IMPORT_DESCRIPTOR *descriptor = Memory::GetRVA<IMAGE_IMPORT_DESCRIPTOR>(module, importDirectory->VirtualAddress);
+		auto *descriptor = Memory::GetRVA<IMAGE_IMPORT_DESCRIPTOR>(module, importDirectory->VirtualAddress);
 
 		// Search imports
 		for (; descriptor->Name; descriptor++)
@@ -68,8 +68,8 @@ namespace indigo
 				continue;
 
 			// Pointer to name and address entries
-			IMAGE_THUNK_DATA *originalFirstThunk = Memory::GetRVA<IMAGE_THUNK_DATA>(module, descriptor->OriginalFirstThunk);
-			IMAGE_THUNK_DATA *firstThunk = Memory::GetRVA<IMAGE_THUNK_DATA>(module, descriptor->FirstThunk);
+			auto *originalFirstThunk = Memory::GetRVA<IMAGE_THUNK_DATA>(module, descriptor->OriginalFirstThunk);
+			auto *firstThunk = Memory::GetRVA<IMAGE_THUNK_DATA>(module, descriptor->FirstThunk);
 
 			// Check if we have hints
 			if (!descriptor->OriginalFirstThunk)
@@ -85,7 +85,7 @@ namespace indigo
 				}
 				else if (!ordinal)
 				{
-					IMAGE_IMPORT_BY_NAME *importByName = Memory::GetRVA<IMAGE_IMPORT_BY_NAME>(module, *reinterpret_cast<uintptr_t *>(originalFirstThunk));
+					auto *importByName = Memory::GetRVA<IMAGE_IMPORT_BY_NAME>(module, *reinterpret_cast<uintptr_t *>(originalFirstThunk));
 					replace = strcmp(importByName->Name, importName) == 0;
 				}
 

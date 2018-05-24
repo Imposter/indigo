@@ -9,6 +9,7 @@
 #include "Network/WebClient.hpp"
 #include "curl/curl.h"
 #include <sstream>
+#include <utility>
 
 namespace indigo
 {
@@ -117,7 +118,7 @@ namespace indigo
 
 	void WebRequest::SetUrl(std::string url)
 	{
-		mUrl = url;
+		mUrl = std::move(url);
 	}
 
 	const std::map<std::string, std::string> &WebRequest::GetHeaders() const
@@ -125,9 +126,9 @@ namespace indigo
 		return mHeaders;
 	}
 
-	void WebRequest::SetHeader(std::string key, std::string value)
+	void WebRequest::SetHeader(const std::string &key, std::string value)
 	{
-		mHeaders[key] = value;
+		mHeaders[key] = std::move(value);
 	}
 
 	WebResponse *WebRequest::GetResponse(std::ostream *stream, std::function<void()> onStart, std::function<void(bool)> onFinish, std::function<void(double, double, double)> onProgress)
@@ -136,46 +137,23 @@ namespace indigo
 
 		mResponse = new WebResponse(this);
 		mResponse->mStream = stream;
-		mResponse->OnStart.Add([&]()
-		{
-			onStart();
-			return true;
-		});
-		mResponse->OnFinish.Add([&](bool success)
-		{
-			onFinish(success);
-			return true;
-		});
-		mResponse->OnProgressChanged.Add([&](double total, double now, double percent)
-		{
-			onProgress(total, now, percent);
-			return true;
-		});
+		mResponse->OnStart.Add(onStart);
+		mResponse->OnFinish.Add(onFinish);
+		mResponse->OnProgressChanged.Add(onProgress);
 		mResponse->doRequest();
 
 		return mResponse;
 	}
 
-	WebResponse *WebRequest::GetResponse(std::function<void()> onStart, std::function<void(bool)> onFinish, std::function<void(double, double, double)> onProgress)
+	WebResponse *WebRequest::GetResponse(const std::function<void()> &onStart, const std::function<void(bool)> &onFinish,
+	                                     const std::function<void(double, double, double)> &onProgress)
 	{
 		Close();
 
 		mResponse = new WebResponse(this);
-		mResponse->OnStart.Add([&]()
-		{
-			onStart();
-			return true;
-		});
-		mResponse->OnFinish.Add([&](bool success)
-		{
-			onFinish(success);
-			return true;
-		});
-		mResponse->OnProgressChanged.Add([&](double total, double now, double percent)
-		{
-			onProgress(total, now, percent);
-			return true;
-		});
+		mResponse->OnStart.Add(onStart);
+		mResponse->OnFinish.Add(onFinish);
+		mResponse->OnProgressChanged.Add(onProgress);
 		mResponse->doRequest();
 
 		return mResponse;
@@ -207,7 +185,7 @@ namespace indigo
 	}
 
 	WebClient::WebClient(std::string userAgent)
-		: mUserAgent(userAgent) {}
+		: mUserAgent(std::move(userAgent)) {}
 
 	WebClient::~WebClient()
 	{
@@ -224,14 +202,14 @@ namespace indigo
 
 	void WebClient::SetUserAgent(std::string user_agent)
 	{
-		mUserAgent = user_agent;
+		mUserAgent = std::move(user_agent);
 	}
 
 	WebRequest *WebClient::CreateRequest(std::string url, std::map<std::string, std::string> headers, bool sslVerify)
 	{
-		WebRequest *web_request = new WebRequest(this);
-		web_request->mUrl = url;
-		web_request->mHeaders = headers;
+		auto *web_request = new WebRequest(this);
+		web_request->mUrl = std::move(url);
+		web_request->mHeaders = std::move(headers);
 		web_request->mSslVerify = sslVerify;
 
 		mMutex.lock();

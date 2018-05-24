@@ -127,7 +127,7 @@ namespace indigo
 		{
 			// Get the pointer to the data object and flip the object in
 			// case the endian order needs changing
-			uint8_t *pBuffer = reinterpret_cast<uint8_t *>(&obj);
+			auto *pBuffer = reinterpret_cast<uint8_t *>(&obj);
 			size_t size = sizeof(_TData);
 			if (mFlipEndian)
 				FlipEndian(pBuffer, size);

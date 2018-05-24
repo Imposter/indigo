@@ -75,14 +75,14 @@ namespace indigo
 		void SetUrl(std::string url);
 
 		const std::map<std::string, std::string> &GetHeaders() const;
-		void SetHeader(std::string key, std::string value);
+		void SetHeader(const std::string &key, std::string value);
 
 		WebResponse *GetResponse(std::ostream *stream, std::function<void()> onStart = std::function<void()>([]() { }),
 		                         std::function<void(bool)> onFinish = std::function<void(bool)>([](bool) { }),
 		                         std::function<void(double, double, double)> onProgress = std::function<void(double, double, double)>([](double, double, double) { }));
-		WebResponse *GetResponse(std::function<void()> onStart = std::function<void()>([]() { }),
-		                         std::function<void(bool)> onFinish = std::function<void(bool)>([](bool) { }),
-		                         std::function<void(double, double, double)> onProgress = std::function<void(double, double, double)>([](double, double, double) { }));
+		WebResponse *GetResponse(const std::function<void()> &onStart = std::function<void()>([]() { }),
+		                         const std::function<void(bool)> &onFinish = std::function<void(bool)>([](bool) { }),
+		                         const std::function<void(double, double, double)> &onProgress = std::function<void(double, double, double)>([](double, double, double) { }));
 
 		void Close();
 	};

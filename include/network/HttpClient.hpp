@@ -37,10 +37,10 @@ namespace indigo
 		static int32_t CurlWriteCallback(char *data, int32_t size, int32_t count, void *obj);
 
 	public:
-		HttpClient(std::string userAgent = "indigo::HttpClient");
+		HttpClient(const std::string &userAgent = "indigo::HttpClient");
 		~HttpClient();
 
-		bool DownloadData(std::ostream *object, std::string url, std::map<std::string, std::string> headers = {}, bool sslVerify = false);
+		bool DownloadData(std::ostream *object, const std::string &url, std::map<std::string, std::string> headers = {}, bool sslVerify = false);
 
 		Event<std::ostream *, std::string, std::map<std::string, std::string>> OnStart;
 		Event<bool, std::ostream *, std::string, std::map<std::string, std::string>> OnFinish;

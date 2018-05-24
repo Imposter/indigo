@@ -94,7 +94,7 @@ namespace indigo
 			return false;
 
 		// Update the entrypoint
-		MEMORYMODULE *module = reinterpret_cast<MEMORYMODULE *>(mModule);
+		auto *module = reinterpret_cast<MEMORYMODULE *>(mModule);
 		IMAGE_NT_HEADERS *ntHeaders = Memory::GetNTHeader(module->codeBase);
 		module->exeEntry = reinterpret_cast<ExeEntryProc>(ntHeaders->OptionalHeader.ImageBase + ntHeaders->OptionalHeader.AddressOfEntryPoint);
 
@@ -105,7 +105,7 @@ namespace indigo
 		return true;
 	}
 
-	void *Module::GetExport(std::string name) const
+	void *Module::GetExport(const std::string &name) const
 	{
 		return MemoryGetProcAddress(mModule, name.c_str());
 	}
@@ -117,7 +117,7 @@ namespace indigo
 
 	void *Module::loadLibraryInternal(const char *pathName, void *userData)
 	{
-		Module *module = reinterpret_cast<Module *>(userData);
+		auto *module = reinterpret_cast<Module *>(userData);
 		if (!module->mLoadLibrary)
 			return LoadLibraryA(pathName);
 
@@ -126,7 +126,7 @@ namespace indigo
 
 	void Module::freeLibraryInternal(void *handle, void *userData)
 	{
-		Module *module = reinterpret_cast<Module *>(userData);
+		auto *module = reinterpret_cast<Module *>(userData);
 		if (!module->mFreeLibrary)
 			FreeLibrary(static_cast<HMODULE>(handle));
 
@@ -135,7 +135,7 @@ namespace indigo
 
 	void *Module::getExportInternal(void *handle, const char *exportName, void *userData)
 	{
-		Module *module = reinterpret_cast<Module *>(userData);
+		auto *module = reinterpret_cast<Module *>(userData);
 		if (!module->mGetExport)
 			return GetProcAddress(static_cast<HMODULE>(handle), exportName);
 

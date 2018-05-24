@@ -239,7 +239,7 @@ namespace indigo
 			Write<float>(obj);
 		}
 
-		void WriteString(std::string obj)
+		void WriteString(const std::string &obj)
 		{
 			Write<uint8_t>(kDataType_String);
 			uint32_t length = obj.size();
@@ -247,7 +247,7 @@ namespace indigo
 			WriteArray<char>(obj.c_str(), length);
 		}
 
-		void WriteBlob(std::basic_string<uint8_t> obj)
+		void WriteBlob(const std::basic_string<uint8_t> &obj)
 		{
 			Write<uint8_t>(kDataType_Blob);
 			uint32_t length = obj.size();

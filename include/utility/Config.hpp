@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <map>
 #include <mutex>
+#include <utility>
 
 namespace indigo
 {
@@ -25,7 +26,7 @@ namespace indigo
 	public:
 		bool Open(std::string buffer)
 		{
-			mBuffer = buffer;
+			mBuffer = std::move(buffer);
 			mBuffer = String::Replace(mBuffer, "\r\n", "\n");
 
 			std::vector<std::string> lines;
@@ -76,12 +77,12 @@ namespace indigo
 			mData.clear();
 		}
 
-		bool KeyExists(std::string section, std::string key)
+		bool KeyExists(const std::string &section, const std::string &key)
 		{
 			return !(mData.find(section) == mData.end() || mData[section].find(key) == mData[section].end());
 		}
 
-		std::string GetString(std::string section, std::string key, std::string defaultValue = std::string())
+		std::string GetString(const std::string &section, const std::string &key, std::string defaultValue = std::string())
 		{
 			if (mData.find(section) == mData.end() || mData[section].find(key) == mData[section].end())
 			{
@@ -92,7 +93,7 @@ namespace indigo
 			return mData[section][key];
 		}
 
-		int64_t GetInteger(std::string section, std::string key, int64_t defaultValue = 0)
+		int64_t GetInteger(const std::string &section, const std::string &key, int64_t defaultValue = 0)
 		{
 			if (mData.find(section) == mData.end() || mData[section].find(key) == mData[section].end())
 			{
@@ -103,7 +104,7 @@ namespace indigo
 			return stoull(mData[section][key], nullptr, 0);
 		}
 
-		float GetFloat(std::string section, std::string key, float defaultValue = 0)
+		float GetFloat(const std::string &section, const std::string &key, float defaultValue = 0)
 		{
 			if (mData.find(section) == mData.end() || mData[section].find(key) == mData[section].end())
 			{
@@ -114,7 +115,7 @@ namespace indigo
 			return stof(mData[section][key]);
 		}
 
-		std::vector<std::string> GetStringList(std::string section, std::string key, std::vector<std::string> defaultValue = std::vector<std::string>())
+		std::vector<std::string> GetStringList(const std::string &section, const std::string &key, std::vector<std::string> defaultValue = std::vector<std::string>())
 		{
 			if (mData.find(section) == mData.end() || mData[section].find(key) == mData[section].end())
 			{
@@ -130,7 +131,7 @@ namespace indigo
 			return result;
 		}
 
-		std::vector<int64_t> GetIntegerList(std::string section, std::string key, std::vector<int64_t> defaultValue = std::vector<int64_t>())
+		std::vector<int64_t> GetIntegerList(const std::string &section, const std::string &key, std::vector<int64_t> defaultValue = std::vector<int64_t>())
 		{
 			if (mData.find(section) == mData.end() || mData[section].find(key) == mData[section].end())
 			{
@@ -146,7 +147,7 @@ namespace indigo
 			return result;
 		}
 
-		std::vector<float> GetFloatList(std::string section, std::string key, std::vector<float> defaultValue = std::vector<float>())
+		std::vector<float> GetFloatList(const std::string &section, const std::string &key, std::vector<float> defaultValue = std::vector<float>())
 		{
 			if (mData.find(section) == mData.end() || mData[section].find(key) == mData[section].end())
 			{
@@ -161,7 +162,7 @@ namespace indigo
 			return result;
 		}
 
-		std::map<std::string, std::string> GetStringMap(std::string section, std::string key, std::map<std::string, std::string> defaultValue
+		std::map<std::string, std::string> GetStringMap(const std::string &section, const std::string &key, std::map<std::string, std::string> defaultValue
 			                                                = std::map<std::string, std::string>())
 		{
 			if (mData.find(section) == mData.end() || mData[section].find(key) == mData[section].end())
@@ -183,7 +184,7 @@ namespace indigo
 			return result;
 		}
 
-		std::map<std::string, int64_t> GetIntegerMap(std::string section, std::string key, std::map<std::string, int64_t> defaultValue
+		std::map<std::string, int64_t> GetIntegerMap(const std::string &section, const std::string &key, std::map<std::string, int64_t> defaultValue
 			                                             = std::map<std::string, int64_t>())
 		{
 			if (mData.find(section) == mData.end() || mData[section].find(key) == mData[section].end())
@@ -205,7 +206,7 @@ namespace indigo
 			return result;
 		}
 
-		std::map<std::string, float> GetFloatMap(std::string section, std::string key, std::map<std::string, float> defaultValue = std::map<std::string, float>())
+		std::map<std::string, float> GetFloatMap(const std::string &section, const std::string &key, std::map<std::string, float> defaultValue = std::map<std::string, float>())
 		{
 			if (mData.find(section) == mData.end() || mData[section].find(key) == mData[section].end())
 			{
@@ -226,57 +227,57 @@ namespace indigo
 			return result;
 		}
 
-		void SetString(std::string section, std::string key, std::string value)
+		void SetString(const std::string &section, const std::string &key, std::string value)
 		{
-			mData[section][key] = value;
+			mData[section][key] = std::move(value);
 		}
 
-		void SetInteger(std::string section, std::string key, int64_t value)
-		{
-			mData[section][key] = std::to_string(value);
-		}
-
-		void SetFloat(std::string section, std::string key, float value)
+		void SetInteger(const std::string &section, const std::string &key, int64_t value)
 		{
 			mData[section][key] = std::to_string(value);
 		}
 
-		void SetStringList(std::string section, std::string key, std::vector<std::string> value)
+		void SetFloat(const std::string &section, const std::string &key, float value)
+		{
+			mData[section][key] = std::to_string(value);
+		}
+
+		void SetStringList(const std::string &section, const std::string &key, std::vector<std::string> value)
 		{
 			mData[section][key] = std::to_string(value.size());
 			for (size_t i = 0; i < value.size(); i++)
 				mData[section][key + "." + std::to_string(i)] = value[i];
 		}
 
-		void SetIntegerList(std::string section, std::string key, std::vector<int64_t> value)
+		void SetIntegerList(const std::string &section, const std::string &key, std::vector<int64_t> value)
 		{
 			mData[section][key] = std::to_string(value.size());
 			for (size_t i = 0; i < value.size(); i++)
 				mData[section][key + "." + std::to_string(i)] = std::to_string(value[i]);
 		}
 
-		void SetFloatList(std::string section, std::string key, std::vector<float> value)
+		void SetFloatList(const std::string &section, const std::string &key, std::vector<float> value)
 		{
 			mData[section][key] = std::to_string(value.size());
 			for (size_t i = 0; i < value.size(); i++)
 				mData[section][key + "." + std::to_string(i)] = std::to_string(value[i]);
 		}
 
-		void SetStringMap(std::string section, std::string key, std::map<std::string, std::string> value)
+		void SetStringMap(const std::string &section, const std::string &key, std::map<std::string, std::string> value)
 		{
 			mData[section][key] = std::to_string(value.size());
 			for (auto &pair : value)
 				mData[section][key + "." + pair.first] = pair.second;
 		}
 
-		void SetIntegerMap(std::string section, std::string key, std::map<std::string, int64_t> value)
+		void SetIntegerMap(const std::string &section, const std::string &key, std::map<std::string, int64_t> value)
 		{
 			mData[section][key] = std::to_string(value.size());
 			for (auto &pair : value)
 				mData[section][key + "." + pair.first] = std::to_string(pair.second);
 		}
 
-		void SetFloatMap(std::string section, std::string key, std::map<std::string, float> value)
+		void SetFloatMap(const std::string &section, const std::string &key, std::map<std::string, float> value)
 		{
 			mData[section][key] = std::to_string(value.size());
 			for (auto &pair : value)

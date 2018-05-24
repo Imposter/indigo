@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <functional>
+#include <utility>
 
 namespace indigo
 {
@@ -48,8 +49,7 @@ namespace indigo
 
 		// This method does not return if successful
 		bool Execute() const;
-
-		void *GetExport(std::string name) const;
+		void *GetExport(const std::string &name) const;
 		void *GetImage() const;
 	};
 
@@ -68,7 +68,7 @@ namespace indigo
 
 	public:
 		ModuleFile(std::string path)
-			: Module(nullptr, 0), path_(path) { }
+			: Module(nullptr, 0), path_(std::move(path)) { }
 
 		ModuleFile(const ModuleFile &) = delete;
 

@@ -60,7 +60,7 @@ namespace indigo
 		static uint32_t FNV1A_32(std::istream &stream, uint32_t prime = FNV1A_Prime32, uint32_t offset = FNV1A_Offset32)
 		{
 			size_t buffer_size = 1024 * 1024;
-			char *buffer = new char[buffer_size];
+			auto *buffer = new char[buffer_size];
 			uint32_t hash = offset;
 			while (!stream.eof())
 			{
@@ -75,7 +75,7 @@ namespace indigo
 		static uint64_t FNV1A_64(std::istream &stream, uint32_t prime = FNV1A_Prime64, uint32_t offset = FNV1A_Offset64)
 		{
 			size_t buffer_size = 1024 * 1024;
-			char *buffer = new char[buffer_size];
+			auto *buffer = new char[buffer_size];
 			uint64_t hash = offset;
 			while (!stream.eof())
 			{

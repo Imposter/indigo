@@ -16,6 +16,7 @@
 #include <Windows.h>
 #include <WinCred.h>
 #include <ole2.h>
+#include <utility>
 
 namespace indigo
 {
@@ -32,7 +33,7 @@ namespace indigo
 
 		std::wstring wUsername;
 		std::wstring wPassword;
-		std::wstring wTitle = String::ToWideString(title);
+		std::wstring wTitle = String::ToWideString(std::move(title));
 		std::wstring wMessage = String::ToWideString(tempString);
 
 		CREDUI_INFOW creduiInfo;
