@@ -176,14 +176,26 @@ namespace indigo
 			return true;
 		}
 
-		template <typename _TExport>
-		bool Install(const char *module, _TExport exportName, void *redirect, void *original = nullptr)
+		bool Install(const char *module, const char *exportName, void *redirect, void *original = nullptr)
 		{
 			if (mInstalled)
 				return false;
 
 			mModuleName = module;
-			mExportName = reinterpret_cast<const char *>(exportName);
+			mExportName = exportName;
+			mRedirect = redirect;
+			mOriginal = original;
+
+			return Install();
+		}
+
+		bool Install(const char *module, const int exportOrdinal, void *redirect, void *original = nullptr)
+		{
+			if (mInstalled)
+				return false;
+
+			mModuleName = module;
+			mExportName = reinterpret_cast<const char *>(exportOrdinal);
 			mRedirect = redirect;
 			mOriginal = original;
 
