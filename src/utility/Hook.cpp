@@ -18,7 +18,7 @@
 
 namespace indigo
 {
-	bool Hook::Install(void *target, void *function, void **original)
+	bool HookBase::Install(void *target, void *function, void **original)
 	{
 		MH_STATUS status = MH_CreateHook(target, function, original);
 		if (status == MH_ERROR_NOT_INITIALIZED)
@@ -32,7 +32,7 @@ namespace indigo
 		return status == MH_OK;
 	}
 
-	bool Hook::Remove(void **original)
+	bool HookBase::Remove(void **original)
 	{
 		if (MH_DisableHook(original) != MH_OK)
 			return false;
@@ -40,7 +40,7 @@ namespace indigo
 		return MH_RemoveHook(original) == MH_OK;
 	}
 
-	bool Hook::Install(const char *moduleName, const char *exportName, void *function, void **original)
+	bool HookBase::Install(const char *moduleName, const char *exportName, void *function, void **original)
 	{
 		HMODULE module = LoadLibraryA(moduleName);
 		if (module == nullptr)
@@ -53,7 +53,7 @@ namespace indigo
 		return Install(target, function, original);
 	}
 
-	bool Hook::Install(void *module, const char *moduleName, const char *importName, bool ordinal, void *function, void **original)
+	bool HookBase::Install(void *module, const char *moduleName, const char *importName, bool ordinal, void *function, void **original)
 	{
 		IMAGE_NT_HEADERS *ntHeaders = Memory::GetNTHeader(module);
 		IMAGE_DATA_DIRECTORY *importDirectory = &ntHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
