@@ -6,7 +6,7 @@
 *   LICENSE in the project root.
 */
 
-#include "Utility/Console.hpp"
+#include "utility/Console.hpp"
 #include "Platform.hpp"
 #if !defined(OS_WIN)
 #error "Unsupported platform!"

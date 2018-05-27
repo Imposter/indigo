@@ -9,7 +9,7 @@
 #ifndef indigo_config_hpp_
 #define indigo_config_hpp_
 
-#include "../Core/String.hpp"
+#include "../core/String.hpp"
 #include <stdint.h>
 #include <map>
 #include <mutex>

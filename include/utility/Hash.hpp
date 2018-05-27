@@ -9,7 +9,7 @@
 #ifndef indigo_hash_hpp_
 #define indigo_hash_hpp_
 
-#include "../Core/String.hpp"
+#include "../core/String.hpp"
 #include <iostream>
 #include <stdint.h>
 

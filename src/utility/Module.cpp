@@ -6,7 +6,7 @@
  *  LICENSE in the project root.
 */
 
-#include "Utility/Module.hpp"
+#include "utility/Module.hpp"
 #include "MemoryModule.h"
 
 namespace indigo

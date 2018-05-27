@@ -10,7 +10,7 @@
 #define indigo_module_hpp_
 
 #include "../Build.hpp"
-#include "memory.hpp"
+#include "Memory.hpp"
 #include <stdlib.h>
 #include <stdio.h>
 #include <functional>
@@ -24,9 +24,9 @@ namespace indigo
 		std::function<void (void *)> mFreeLibrary;
 		std::function<void *(void *, const char *)> mGetExport;
 
-		static void *loadLibraryInternal(const char *path_name, void *user_data);
-		static void freeLibraryInternal(void *handle, void *user_data);
-		static void *getExportInternal(void *handle, const char *export_name, void *user_data);
+		static void *loadLibraryInternal(const char *pathName, void *userData);
+		static void freeLibraryInternal(void *handle, void *userData);
+		static void *getExportInternal(void *handle, const char *exportName, void *userData);
 
 	protected:
 		void *mMemory;

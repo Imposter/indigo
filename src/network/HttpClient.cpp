@@ -6,8 +6,8 @@
 *   LICENSE in the project root.
 */
 
-#include "Network/HttpClient.hpp"
-#include "Core/String.hpp"
+#include "network/HttpClient.hpp"
+#include "core/String.hpp"
 #include "curl/curl.h"
 
 namespace indigo

@@ -24,7 +24,7 @@
 *
 */
 
-#include <windows.h>
+#include <Windows.h>
 #include <winnt.h>
 #include <stddef.h>
 #include <stdint.h>

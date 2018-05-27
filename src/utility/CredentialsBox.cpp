@@ -6,16 +6,16 @@
 *   LICENSE in the project root.
 */
 
-#include "Utility/CredentialsBox.hpp"
+#include "utility/CredentialsBox.hpp"
 #include "Platform.hpp"
 #if !defined(OS_WIN)
 #error "Unsupported platform!"
 #endif
-#include "core/string.hpp"
+#include "core/String.hpp"
 
 #include <Windows.h>
-#include <WinCred.h>
-#include <ole2.h>
+#include <wincred.h>
+#include <Ole2.h>
 #include <utility>
 
 namespace indigo

@@ -50,20 +50,19 @@ namespace indigo
 		static std::string Format(std::string format, ...)
 		{
 			va_list arguments;
-
 			va_start(arguments, format);
-			auto length = vsnprintf(nullptr, 0, format.c_str(), arguments) + 1;
-			va_end(arguments);
+
+			const int length = _vscprintf(format.c_str(), arguments) + 1;
 
 			std::string result;
 			result.resize(length);
 
-			va_start(arguments, format);
-			length = vsnprintf(const_cast<char *>(result.c_str()), length, format.c_str(), arguments);
+			vsprintf_s(const_cast<char *>(result.c_str()), length, format.c_str(), arguments);
+
 			va_end(arguments);
 
-			// Resize to new length
-			result.resize(length);
+			// Remove null terminator
+			result.resize(length - 1);
 
 			return result;
 		}

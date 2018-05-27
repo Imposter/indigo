@@ -7,8 +7,8 @@
 */
 
 #include "Platform.hpp"
-#include "Core/String.hpp"
-#include "Utility/File.hpp"
+#include "core/String.hpp"
+#include "utility/File.hpp"
 
 #ifdef HAVE_BOOST
 #include <boost/filesystem.hpp>

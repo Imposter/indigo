@@ -7,7 +7,7 @@
 */
 
 // Required libraries
-#include "Network/Network.hpp"
+#include "network/Network.hpp"
 #include "Platform.hpp"
 #if !defined(OS_WIN)
 #error "Unsupported platform!"

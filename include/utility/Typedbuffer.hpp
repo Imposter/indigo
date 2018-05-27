@@ -10,7 +10,7 @@
 #define indigo_typed_buffer_hpp_
 
 // Required libraries
-#include "../Core/Buffer.hpp"
+#include "../core/Buffer.hpp"
 
 namespace indigo
 {

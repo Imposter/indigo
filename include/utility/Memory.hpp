@@ -14,9 +14,10 @@
 #error "Unsupported platform!"
 #endif
 
-#include "../Core/String.hpp"
+#include "../core/String.hpp"
+#include <utility>
 #include <vector>
-#include <stdint.h>
+#include <cstdint>
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -34,12 +35,12 @@ namespace indigo
 
 		MemoryPointer Add(int count) const
 		{
-			return MemoryPointer(mAddress + count);
+			return {mAddress + count};
 		}
 
 		MemoryPointer Sub(int count) const
 		{
-			return MemoryPointer(mAddress - count);
+			return {mAddress - count};
 		}
 
 		void *Get() const
@@ -60,7 +61,7 @@ namespace indigo
 
 	public:
 		MemoryPointerList(std::vector<MemoryPointer> pointers)
-			: mPointers(pointers) { }
+			: mPointers(std::move(pointers)) { }
 
 		size_t Count() const
 		{
@@ -80,7 +81,7 @@ namespace indigo
 		MemoryPointer Select(int index) const
 		{
 			if (index >= mPointers.size())
-				return MemoryPointer(nullptr);
+				return {nullptr};
 
 			return mPointers[index];
 		}
@@ -97,21 +98,21 @@ namespace indigo
 
 		static void *GetProcessBaseAddress()
 		{
-			IMAGE_NT_HEADERS *nt_headers = GetNTHeader(GetModuleHandle(nullptr));
-			return reinterpret_cast<void *>(nt_headers->OptionalHeader.ImageBase);
+			IMAGE_NT_HEADERS *ntHeaders = GetNTHeader(GetModuleHandle(nullptr));
+			return reinterpret_cast<void *>(ntHeaders->OptionalHeader.ImageBase);
 		}
 
 		static IMAGE_NT_HEADERS *GetNTHeader(void *address)
 		{
-			IMAGE_DOS_HEADER *prg_dos_header = reinterpret_cast<IMAGE_DOS_HEADER *>(address);
-			IMAGE_NT_HEADERS *prg_nt_header = reinterpret_cast<IMAGE_NT_HEADERS *>(reinterpret_cast<int *>(prg_dos_header) + static_cast<int>(prg_dos_header->e_lfanew / 4));
+			IMAGE_DOS_HEADER *prgDosHeader = reinterpret_cast<IMAGE_DOS_HEADER *>(address);
+			IMAGE_NT_HEADERS *prgNtHeader = reinterpret_cast<IMAGE_NT_HEADERS *>(reinterpret_cast<int *>(prgDosHeader) + static_cast<int>(prgDosHeader->e_lfanew / 4));
 
-			if (prg_nt_header->Signature != IMAGE_NT_SIGNATURE)
+			if (prgNtHeader->Signature != IMAGE_NT_SIGNATURE)
 			{
 				return nullptr;
 			}
 
-			return prg_nt_header;
+			return prgNtHeader;
 		}
 
 		static void *GetProcessTextSectionStart(void *address = GetProcessBaseAddress())
@@ -134,28 +135,28 @@ namespace indigo
 			return reinterpret_cast<void *>(reinterpret_cast<char *>(address) + GetNTHeader(address)->OptionalHeader.AddressOfEntryPoint);
 		}
 
-		static void *Find(void *start_address, size_t search_length, const char *pattern, const char *mask)
+		static void *Find(void *startAddress, size_t searchLength, const char *pattern, const char *mask)
 		{
-			size_t mask_length = strlen(mask);
+			const size_t maskLength = strlen(mask);
 
-			for (size_t i = 0; i < search_length - mask_length; ++i)
+			for (size_t i = 0; i < searchLength - maskLength; ++i)
 			{
-				size_t found_bytes = 0;
+				size_t foundBytes = 0;
 
-				for (size_t j = 0; j < mask_length; ++j)
+				for (size_t j = 0; j < maskLength; ++j)
 				{
-					char byte_read = *reinterpret_cast<char *>(static_cast<char *>(start_address) + i + j);
+					const char byteRead = *reinterpret_cast<char *>(static_cast<char *>(startAddress) + i + j);
 
-					if (byte_read != pattern[j] && mask[j] != '?')
+					if (byteRead != pattern[j] && mask[j] != '?')
 					{
 						break;
 					}
 
-					++found_bytes;
+					++foundBytes;
 
-					if (found_bytes == mask_length)
+					if (foundBytes == maskLength)
 					{
-						return static_cast<char *>(start_address) + i;
+						return static_cast<char *>(startAddress) + i;
 					}
 				}
 			}
@@ -163,23 +164,23 @@ namespace indigo
 			return nullptr;
 		}
 
-		static MemoryPointerList Find(void *start_address, size_t search_length, const char *pattern)
+		static MemoryPointerList Find(void *startAddress, size_t searchLength, const std::string &pattern)
 		{
 			std::vector<MemoryPointer> pointers;
 
 			// Generate pattern
-			std::vector<std::string> split_pattern = String::Split(pattern, " ");
+			std::vector<std::string> splitPattern = String::Split(pattern, " ");
 			std::string mask;
-			uint8_t *clean_pattern = new uint8_t[split_pattern.size()];
-			for (size_t i = 0; i < split_pattern.size(); i++)
+			const auto cleanPattern = new uint8_t[splitPattern.size()];
+			for (size_t i = 0; i < splitPattern.size(); i++)
 			{
-				const char *byte_string = split_pattern[i].c_str();
+				const char *byteString = splitPattern[i].c_str();
 
 				// Convert to number
-				long byte = strtol(byte_string, nullptr, 16);
-				clean_pattern[i] = static_cast<uint8_t>(byte);
+				const long byte = strtol(byteString, nullptr, 16);
+				cleanPattern[i] = static_cast<uint8_t>(byte);
 
-				if (strcmp(byte_string, "??") == 0)
+				if (strcmp(byteString, "??") == 0)
 				{
 					mask.append("?");
 				}
@@ -189,25 +190,25 @@ namespace indigo
 				}
 			}
 
-			void *current_address = Find(start_address, search_length, reinterpret_cast<const char *>(const_cast<const uint8_t *>(clean_pattern)), mask.c_str());
-			pointers.push_back(current_address);
-			while (current_address != nullptr && current_address < static_cast<char *>(start_address) + search_length)
+			void *currentAddress = Find(startAddress, searchLength, reinterpret_cast<const char *>(const_cast<const uint8_t *>(cleanPattern)), mask.c_str());
+			pointers.emplace_back(currentAddress);
+			while (currentAddress != nullptr && currentAddress < static_cast<char *>(startAddress) + searchLength)
 			{
-				current_address = Find(static_cast<char *>(current_address) + 1,
-				                       search_length - (reinterpret_cast<size_t>(current_address) - reinterpret_cast<size_t>(start_address)),
-				                       reinterpret_cast<const char *>(const_cast<const uint8_t *>(clean_pattern)), mask.c_str());
-				if (current_address != nullptr)
+				currentAddress = Find(static_cast<char *>(currentAddress) + 1,
+				                       searchLength - (reinterpret_cast<size_t>(currentAddress) - reinterpret_cast<size_t>(startAddress)),
+				                       reinterpret_cast<const char *>(const_cast<const uint8_t *>(cleanPattern)), mask.c_str());
+				if (currentAddress != nullptr)
 				{
-					pointers.push_back(current_address);
+					pointers.emplace_back(currentAddress);
 				}
 			}
 
-			delete[] clean_pattern;
+			delete[] cleanPattern;
 
 			return pointers;
 		}
 
-		static MemoryPointerList Find(const char *pattern)
+		static MemoryPointerList Find(const std::string &pattern)
 		{
 			return Find(GetProcessBaseAddress(), GetProcessImageSize(), pattern);
 		}

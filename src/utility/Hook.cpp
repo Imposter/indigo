@@ -11,9 +11,9 @@
 #error "Unsupported platform!"
 #endif
 
-#include "Utility/Hook.hpp"
-#include "Utility/Memory.hpp"
-#include "Core/String.hpp"
+#include "utility/Hook.hpp"
+#include "utility/Memory.hpp"
+#include "core/String.hpp"
 #include <minhook/MinHook.h>
 
 namespace indigo
@@ -42,7 +42,7 @@ namespace indigo
 
 	bool HookBase::Install(const char *moduleName, const char *exportName, void *function, void **original)
 	{
-		HMODULE module = LoadLibraryA(moduleName);
+		const HMODULE module = LoadLibraryA(moduleName);
 		if (module == nullptr)
 			return false;
 
@@ -92,7 +92,7 @@ namespace indigo
 				if (replace)
 				{
 					// Unprotect function
-					DWORD funcProt = Memory::SetProtection(firstThunk, sizeof firstThunk, PAGE_EXECUTE_READWRITE);
+					const DWORD funcProt = Memory::SetProtection(firstThunk, sizeof firstThunk, PAGE_EXECUTE_READWRITE);
 
 					// Store original
 					if (original != nullptr)

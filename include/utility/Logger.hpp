@@ -86,7 +86,7 @@ namespace indigo
 			va_list arguments;
 			va_start(arguments, format);
 
-			int length = _vscprintf(format.c_str(), arguments) + 1;
+			const int length = _vscprintf(format.c_str(), arguments) + 1;
 
 			std::vector<char> message;
 			message.resize(length);
@@ -96,28 +96,28 @@ namespace indigo
 
 			va_end(arguments);
 
-			const char *type_string;
+			const char *typeString;
 			switch (type)
 			{
 			case kLogType_Error:
-				type_string = "ERROR";
+				typeString = "ERROR";
 				break;
 			case kLogType_Warning:
-				type_string = "WARNING";
+				typeString = "WARNING";
 				break;
 			case kLogType_Trace:
-				type_string = "TRACE";
+				typeString = "TRACE";
 				break;
 			case kLogType_Info:
-				type_string = "INFO";
+				typeString = "INFO";
 				break;
 			default:
-				type_string = "UNKN";
+				typeString = "UNKN";
 			}
 
 			time_t currentTime;
 			time(&currentTime);
-			tm localTime;
+			tm localTime{};
 			localtime_s(&localTime, &currentTime);
 
 			mStreamsMutex.lock();
@@ -126,7 +126,7 @@ namespace indigo
 				*stream << "[" << std::setw(2) << std::setfill('0') << localTime.tm_hour
 					<< ":" << std::setw(2) << std::setfill('0') << localTime.tm_min
 					<< ":" << std::setw(2) << std::setfill('0') << localTime.tm_sec
-					<< "][" << type_string << ":" << className.c_str()
+					<< "][" << typeString << ":" << className.c_str()
 					<< "]: " << message.data() << std::endl;
 			}
 			mStreamsMutex.unlock();

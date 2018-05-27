@@ -15,7 +15,7 @@ typedef void CURL;
 #endif // INDIGO_CURL_DEFS
 
 #include "../Build.hpp"
-#include "../Core/Event.hpp"
+#include "../core/Event.hpp"
 #include <map>
 #include <ostream>
 

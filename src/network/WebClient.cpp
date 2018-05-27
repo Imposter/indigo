@@ -6,7 +6,7 @@
  *  LICENSE in the project root.
 */
 
-#include "Network/WebClient.hpp"
+#include "network/WebClient.hpp"
 #include "curl/curl.h"
 #include <sstream>
 #include <utility>

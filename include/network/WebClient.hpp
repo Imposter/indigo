@@ -10,8 +10,8 @@
 #define indigo_web_client_hpp_
 
 #include "../Build.hpp"
-#include "../Core/Event.hpp"
-#include "../Core/String.hpp"
+#include "../core/Event.hpp"
+#include "../core/String.hpp"
 #include <map>
 #include <ostream>
 

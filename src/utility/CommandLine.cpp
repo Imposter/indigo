@@ -6,7 +6,7 @@
 *   LICENSE in the project root.
 */
 
-#include "Utility/CommandLine.hpp"
+#include "utility/CommandLine.hpp"
 
 namespace indigo
 {
