@@ -20,7 +20,7 @@ namespace indigo
 {
 	class INDIGO_API CommandLine
 	{
-		static std::map<std::string, std::string> mArguments;
+		static std::map<std::string, std::string> sArguments;
 
 		static std::vector<std::string> convertToArgv(std::string commandLine)
 		{
@@ -65,13 +65,13 @@ namespace indigo
 						std::string value = argv[i + 1];
 						if (!value.empty() && value[0] != '-')
 						{
-							mArguments.insert(make_pair(argument, value));
+							sArguments.insert(make_pair(argument, value));
 							inserted = true;
 						}
 					}
 
 					if (!inserted)
-						mArguments.insert(make_pair(argument, ""));
+						sArguments.insert(make_pair(argument, ""));
 				}
 			}
 		}
@@ -90,13 +90,13 @@ namespace indigo
 						std::string value = arguments[i + 1];
 						if (!value.empty() && value[0] != '-')
 						{
-							mArguments.insert(make_pair(argument, value));
+							sArguments.insert(make_pair(argument, value));
 							inserted = true;
 						}
 					}
 
 					if (!inserted)
-						mArguments.insert(make_pair(argument, ""));
+						sArguments.insert(make_pair(argument, ""));
 				}
 			}
 		}
@@ -108,13 +108,13 @@ namespace indigo
 
 		static bool FlagExists(const std::string &keyName)
 		{
-			return mArguments.find(keyName) != mArguments.end();
+			return sArguments.find(keyName) != sArguments.end();
 		}
 
 		static int64_t GetInteger(const std::string &keyName, int64_t defaultValue)
 		{
-			auto value = mArguments.find(keyName);
-			if (value == mArguments.end())
+			auto value = sArguments.find(keyName);
+			if (value == sArguments.end())
 				return defaultValue;
 
 			return stoull(value->second, nullptr, 0);
@@ -122,8 +122,8 @@ namespace indigo
 
 		static std::string GetString(const std::string &keyName, std::string defaultValue)
 		{
-			auto value = mArguments.find(keyName);
-			if (value == mArguments.end())
+			auto value = sArguments.find(keyName);
+			if (value == sArguments.end())
 				return defaultValue;
 
 			return value->second;

@@ -8,12 +8,8 @@
 
 #include "Platform.hpp"
 #include "core/String.hpp"
-#include "utility/File.hpp"
+#include "utility/Path.hpp"
 
-#ifdef HAVE_BOOST
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
-#else
 #if _MSC_VER > 2000
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
@@ -23,7 +19,6 @@ namespace fs = std::experimental::filesystem;
 #include <Shlwapi.h>
 #include <filesystem>
 namespace fs = std::tr2::sys;
-#endif
 #endif
 
 namespace indigo
@@ -37,13 +32,22 @@ namespace indigo
 	}
 #endif
 
+	std::string Path::CurrentDirectory()
+	{		
+#if _MSC_VER < 2000
+		return fs::current_path<fs::path>().string();
+#else
+		return fs::current_path().string();
+#endif
+	}
+
 	// Taken from http://stackoverflow.com/questions/1746136/how-do-i-normalize-a-pathname-using-boostfilesystem
-	fs::path File::Normalize(const fs::path &path)
+	std::string Path::Normalize(const std::string &path)
 	{
 #if _MSC_VER > 2000
-		fs::path absPath = absolute(path);
+		fs::path absPath = absolute(fs::path(path));
 #else
-		fs::path absPath = complete(path);
+		fs::path absPath = complete(fs::path(path));
 #endif
 		fs::path::iterator it = absPath.begin();
 		fs::path result = *it++;
@@ -69,38 +73,24 @@ namespace indigo
 #if defined(OS_WIN)
 		std::string finalPath = String::Replace(result.string(), "/", "\\");
 		finalPath = String::Replace(finalPath, "\\\\", "\\");
-#if defined(HAVE_BOOST)
-		if (*finalPath.end() == 0) {
-			result = fs::path(std::vector<char>(final_path.begin(), final_path.end() - 1));
-		}
-#endif
 #endif
 
-		return result;
+		return result.string();
 	}
 
-	fs::path File::GetRelativePath(const fs::path &path, const fs::path &relativeTo)
+	std::string Path::RelativePath(std::string path, std::string relativeTo)
 	{
-		std::string sourcePath = path.string();
-		std::string relativePath = relativeTo.string();
-
 		// Fix path
 #if defined(OS_WIN)
-		relativePath += "\\";
+		relativeTo += "\\";
 
-		sourcePath = String::Replace(sourcePath, "/", "\\");
-		relativePath = String::Replace(relativePath, "/", "\\");
+		path = String::Replace(path, "/", "\\");
+		relativeTo = String::Replace(relativeTo, "/", "\\");
 
-		sourcePath = String::Replace(sourcePath, "\\\\", "\\");
-		relativePath = String::Replace(relativePath, "\\\\", "\\");
+		path = String::Replace(path, "\\\\", "\\");
+		relativeTo = String::Replace(relativeTo, "\\\\", "\\");
 #endif
 
-		std::string finalPath = String::Replace(sourcePath, relativePath, "", true);
-#if defined(HAVE_BOOST)
-	if (*finalPath.end() == 0) {
-		return fs::path(std::vector<char>(finalPath.begin(), finalPath.end() - 1));
-	} 
-#endif
-		return finalPath;
+		return String::Replace(path, relativeTo, "", true);
 	}
 }

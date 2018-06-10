@@ -10,5 +10,5 @@
 
 namespace indigo
 {
-	std::map<std::string, std::string> CommandLine::mArguments;
+	std::map<std::string, std::string> CommandLine::sArguments;
 }

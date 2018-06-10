@@ -180,7 +180,8 @@ namespace indigo
 				const long byte = strtol(byteString, nullptr, 16);
 				cleanPattern[i] = static_cast<uint8_t>(byte);
 
-				if (strcmp(byteString, "??") == 0)
+				// Support either ?? or ? format
+				if (strcmp(byteString, "??") == 0 || byteString[0] == '?')
 				{
 					mask.append("?");
 				}
