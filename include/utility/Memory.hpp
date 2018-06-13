@@ -192,7 +192,9 @@ namespace indigo
 			}
 
 			void *currentAddress = Find(startAddress, searchLength, reinterpret_cast<const char *>(const_cast<const uint8_t *>(cleanPattern)), mask.c_str());
-			pointers.emplace_back(currentAddress);
+			if (currentAddress != nullptr)
+				pointers.emplace_back(currentAddress);
+			
 			while (currentAddress != nullptr && currentAddress < static_cast<char *>(startAddress) + searchLength)
 			{
 				currentAddress = Find(static_cast<char *>(currentAddress) + 1,

@@ -39,11 +39,11 @@ namespace indigo
 			std::map<std::string, std::string> section;
 			for (auto &line : lines)
 			{
-				if (line.size() > 0)
+				if (!line.empty())
 				{
 					if (line.find_first_of('[') == 0 && line.find_last_of(']') == line.size() - 1)
 					{
-						if (sectionName.size() != 0)
+						if (!sectionName.empty())
 						{
 							mData.insert(make_pair(sectionName, section));
 							section.clear();
@@ -142,7 +142,7 @@ namespace indigo
 			int size = atoi(mData[section][key].c_str());
 			std::vector<int64_t> result;
 			for (int i = 0; i < size; i++)
-				result.push_back(std::stoull(mData[section][key + "." + std::to_string(i)].c_str(), nullptr, 0));
+				result.push_back(std::stoull(mData[section][key + "." + std::to_string(i)], nullptr, 0));
 
 			return result;
 		}
@@ -157,7 +157,7 @@ namespace indigo
 			int size = atoi(mData[section][key].c_str());
 			std::vector<float> result;
 			for (int i = 0; i < size; i++)
-				result.push_back(std::stof(mData[section][key + "." + std::to_string(i)].c_str()));
+				result.push_back(std::stof(mData[section][key + "." + std::to_string(i)]));
 
 			return result;
 		}
@@ -176,8 +176,8 @@ namespace indigo
 			do
 			{
 				for (auto &key_value_pair : mData[section])
-					if (key_value_pair.first.find_first_of(key + ".") == 0)
-						result[key_value_pair.first.substr(key_value_pair.first.find_first_of('.'))] = key_value_pair.second;
+					if (key_value_pair.first != key && key_value_pair.first.find_first_of(key + ".") == 0)
+						result[key_value_pair.first.substr(key_value_pair.first.find_first_of('.') + 1)] = key_value_pair.second;
 			}
 			while (result.size() != size);
 
@@ -198,7 +198,7 @@ namespace indigo
 			do
 			{
 				for (auto &key_value_pair : mData[section])
-					if (key_value_pair.first.find_first_of(key + ".") == 0)
+					if (key_value_pair.first != key && key_value_pair.first.find_first_of(key + ".") == 0)
 						result[key_value_pair.first.substr(key_value_pair.first.find_first_of('.'))] = stoull(key_value_pair.second, nullptr, 0);
 			}
 			while (result.size() != size);
@@ -219,7 +219,7 @@ namespace indigo
 			do
 			{
 				for (auto &key_value_pair : mData[section])
-					if (key_value_pair.first.find_first_of(key + ".") == 0)
+					if (key_value_pair.first != key && key_value_pair.first.find_first_of(key + ".") == 0)
 						result[key_value_pair.first.substr(key_value_pair.first.find_first_of('.'))] = stof(key_value_pair.second);
 			}
 			while (result.size() != size);

@@ -20,9 +20,9 @@ namespace indigo
 {
 	class INDIGO_API Module
 	{
-		std::function<void *(const char *)> mLoadLibrary;
-		std::function<void (void *)> mFreeLibrary;
-		std::function<void *(void *, const char *)> mGetExport;
+		void *(*mLoadLibrary)(const char *);
+		void (*mFreeLibrary)(void *);
+		void *(*mGetExport)(void *, const char *);
 
 		static void *loadLibraryInternal(const char *pathName, void *userData);
 		static void freeLibraryInternal(void *handle, void *userData);
@@ -40,9 +40,9 @@ namespace indigo
 		Module(const Module &) = delete;
 		~Module();
 
-		void SetLoadLibrary(std::function<void *(const char *)> loadLibrary);
-		void SetFreeLibrary(std::function<void(void *)> freeLibrary);
-		void SetGetExport(std::function<void *(void *, const char *)> getExport);
+		void SetLoadLibrary(void *(*loadLibrary)(const char *));
+		void SetFreeLibrary(void (*freeLibrary)(void *));
+		void SetGetExport(void *(*getExport)(void *, const char *));
 
 		bool Load();
 		bool Unload();

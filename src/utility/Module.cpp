@@ -39,17 +39,17 @@ namespace indigo
 		Unload();
 	}
 
-	void Module::SetLoadLibrary(std::function<void *(const char *)> loadLibrary)
+	void Module::SetLoadLibrary(void *(*loadLibrary)(const char *))
 	{
 		mLoadLibrary = loadLibrary;
 	}
 
-	void Module::SetFreeLibrary(std::function<void(void *)> freeLibrary)
+	void Module::SetFreeLibrary(void (*freeLibrary)(void *))
 	{
 		mFreeLibrary = freeLibrary;
 	}
 
-	void Module::SetGetExport(std::function<void *(void *, const char *)> getExport)
+	void Module::SetGetExport(void *(*getExport)(void *, const char *))
 	{
 		mGetExport = getExport;
 	}
@@ -99,10 +99,7 @@ namespace indigo
 		module->exeEntry = reinterpret_cast<ExeEntryProc>(ntHeaders->OptionalHeader.ImageBase + ntHeaders->OptionalHeader.AddressOfEntryPoint);
 
 		// Call the entrypoint
-		if (MemoryCallEntryPoint(mModule) == -1)
-			return false;
-
-		return true;
+		return MemoryCallEntryPoint(mModule) != -1;
 	}
 
 	void *Module::GetExport(const std::string &name) const
