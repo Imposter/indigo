@@ -54,6 +54,13 @@ namespace indigo
 			return *this;
 		}
 
+		void Clear()
+		{
+			mEventMutex.lock();
+			mCallbacks.clear();
+			mEventMutex.unlock();
+		}
+
 		void Trigger(_TArgs ... arguments)
 		{
 			std::vector<std::function<void(_TArgs ...)>> callbacks(mCallbacks.size());
