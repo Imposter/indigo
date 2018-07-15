@@ -96,7 +96,7 @@ namespace indigo
 			return reinterpret_cast<_TRVA *>(static_cast<char *>(module) + rva);
 		}
 
-		static void *GetProcessBaseAddress()
+		static void *GetModuleBaseAddress()
 		{
 			IMAGE_NT_HEADERS *ntHeaders = GetNTHeader(GetModuleHandle(nullptr));
 			return reinterpret_cast<void *>(ntHeaders->OptionalHeader.ImageBase);
@@ -115,22 +115,22 @@ namespace indigo
 			return prgNtHeader;
 		}
 
-		static void *GetProcessTextSectionStart(void *address = GetProcessBaseAddress())
+		static void *GetModuleTextSectionStart(void *address = GetModuleBaseAddress())
 		{
 			return reinterpret_cast<void *>(reinterpret_cast<char *>(address) + GetNTHeader(address)->OptionalHeader.BaseOfCode);
 		}
 
-		static size_t GetProcessTextSectionSize(void *address = GetProcessBaseAddress())
+		static size_t GetModuleTextSectionSize(void *address = GetModuleBaseAddress())
 		{
 			return GetNTHeader(address)->OptionalHeader.SizeOfCode;
 		}
 
-		static size_t GetProcessImageSize(void *address = GetProcessBaseAddress())
+		static size_t GetModuleImageSize(void *address = GetModuleBaseAddress())
 		{
 			return GetNTHeader(address)->OptionalHeader.SizeOfImage;
 		}
 
-		static void *GetModuleEntrypoint(void *address = GetProcessBaseAddress())
+		static void *GetModuleEntrypoint(void *address = GetModuleBaseAddress())
 		{
 			return reinterpret_cast<void *>(reinterpret_cast<char *>(address) + GetNTHeader(address)->OptionalHeader.AddressOfEntryPoint);
 		}
@@ -213,7 +213,7 @@ namespace indigo
 
 		static MemoryPointerList Find(const std::string &pattern)
 		{
-			return Find(GetProcessBaseAddress(), GetProcessImageSize(), pattern);
+			return Find(GetModuleBaseAddress(), GetModuleImageSize(), pattern);
 		}
 
 		template <typename _TAddress>
