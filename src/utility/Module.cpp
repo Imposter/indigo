@@ -125,7 +125,10 @@ namespace indigo
 	{
 		auto *module = reinterpret_cast<Module *>(userData);
 		if (!module->mFreeLibrary)
+		{
 			FreeLibrary(static_cast<HMODULE>(handle));
+			return;
+		}
 
 		module->mFreeLibrary(handle);
 	}
