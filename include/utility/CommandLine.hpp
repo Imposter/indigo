@@ -9,18 +9,17 @@
 #ifndef indigo_command_line_hpp_
 #define indigo_command_line_hpp_
 
-#include "../Build.hpp"
 #include <map>
-#include <stdint.h>
+#include <cstdint>
 #include <utility>
 #include <vector>
 #include <string>
 
 namespace indigo
 {
-	class INDIGO_API CommandLine
+	class CommandLine
 	{
-		static std::map<std::string, std::string> sArguments;
+		std::map<std::string, std::string> mArguments;
 
 		static std::vector<std::string> convertToArgv(std::string commandLine)
 		{
@@ -28,10 +27,10 @@ namespace indigo
 			std::string string;
 			for (size_t i = 0; i < commandLine.size(); i++)
 			{
-				char c = commandLine[i];
+				const auto c = commandLine[i];
 				if (c == '"')
 				{
-					size_t quotePosition = commandLine.find('"', i + 1);
+					const auto quotePosition = commandLine.find('"', i + 1);
 					arguments.push_back(commandLine.substr(i + 1, quotePosition - i - 1));
 					i = quotePosition + 1;
 					continue;
@@ -51,79 +50,96 @@ namespace indigo
 		}
 
 	public:
-		static void Parse(int argc, char **argv)
+		CommandLine() = default;
+
+		CommandLine(int argc, char **argv)
+		{
+			Parse(argc, argv);
+		}
+
+		CommandLine(std::vector<std::string> arguments)
+		{
+			Parse(arguments);
+		}
+
+		CommandLine(std::string commandLine)
+		{
+			Parse(commandLine);
+		}
+
+		void Parse(int argc, char **argv)
 		{
 			for (int i = 0; i < argc; i++)
 			{
 				std::string argument = argv[i];
 				if (!argument.empty() && argument[0] == '-')
 				{
-					bool inserted = false;
+					auto inserted = false;
 					argument = argument.substr(1);
 					if (i + 1 < argc)
 					{
 						std::string value = argv[i + 1];
 						if (!value.empty() && value[0] != '-')
 						{
-							sArguments.insert(make_pair(argument, value));
+							mArguments.insert(make_pair(argument, value));
 							inserted = true;
 						}
 					}
 
 					if (!inserted)
-						sArguments.insert(make_pair(argument, ""));
+						mArguments.insert(make_pair(argument, ""));
 				}
 			}
 		}
 
-		static void Parse(std::vector<std::string> arguments)
+		void Parse(std::vector<std::string> arguments)
 		{
 			for (size_t i = 0; i < arguments.size(); i++)
 			{
-				std::string argument = arguments[i];
+				auto argument = arguments[i];
 				if (!argument.empty() && argument[0] == '-')
 				{
-					bool inserted = false;
+					auto inserted = false;
 					argument = argument.substr(1);
 					if (i + 1 < arguments.size())
 					{
-						std::string value = arguments[i + 1];
+						const auto value = arguments[i + 1];
 						if (!value.empty() && value[0] != '-')
 						{
-							sArguments.insert(make_pair(argument, value));
+							mArguments.insert(make_pair(argument, value));
 							inserted = true;
 						}
 					}
 
 					if (!inserted)
-						sArguments.insert(make_pair(argument, ""));
+						mArguments.insert(make_pair(argument, ""));
 				}
 			}
 		}
 
-		static void Parse(std::string commandLine)
+		void Parse(std::string commandLine)
 		{
 			Parse(convertToArgv(std::move(commandLine)));
 		}
 
-		static bool FlagExists(const std::string &keyName)
+		bool FlagExists(const std::string &keyName)
 		{
-			return sArguments.find(keyName) != sArguments.end();
+			return mArguments.find(keyName) != mArguments.end();
 		}
 
-		static int64_t GetInteger(const std::string &keyName, int64_t defaultValue)
+		int64_t GetInteger(const std::string &keyName, int64_t defaultValue)
 		{
-			auto value = sArguments.find(keyName);
-			if (value == sArguments.end())
+			const auto value = mArguments.find(keyName);
+			if (value == mArguments.end())
 				return defaultValue;
 
 			return stoull(value->second, nullptr, 0);
 		}
 
-		static std::string GetString(const std::string &keyName, std::string defaultValue)
+		std::string GetString(const std::string &keyName, std::string defaultValue)
 		{
-			auto value = sArguments.find(keyName);
-			if (value == sArguments.end())
+			const auto value = mArguments.find(keyName);
+			if (value == mArguments.end())
 				return defaultValue;
 
 			return value->second;

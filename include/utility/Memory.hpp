@@ -102,6 +102,11 @@ namespace indigo
 			return reinterpret_cast<void *>(ntHeaders->OptionalHeader.ImageBase);
 		}
 
+		static IMAGE_DOS_HEADER *GetDOSHeader(void *address)
+		{
+			return reinterpret_cast<IMAGE_DOS_HEADER *>(address);
+		}
+
 		static IMAGE_NT_HEADERS *GetNTHeader(void *address)
 		{
 			IMAGE_DOS_HEADER *prgDosHeader = reinterpret_cast<IMAGE_DOS_HEADER *>(address);
