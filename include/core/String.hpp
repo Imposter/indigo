@@ -69,10 +69,13 @@ namespace indigo
 
 		static std::string PadLeft(const std::string &target, char character, size_t count)
 		{
+			if (count == 0)
+				return target;
+
 			std::string output;
 
-			size_t length_to_add = count - target.size();
-			output.append(length_to_add, character);
+			const size_t lengthToAdd = count - target.size();
+			output.append(lengthToAdd, character);
 			output.append(target);
 
 			return output;
@@ -80,10 +83,13 @@ namespace indigo
 
 		static std::string PadRight(const std::string &target, char character, size_t count)
 		{
+			if (count == 0)
+				return target;
+
 			std::string output = target;
 
-			size_t length_to_add = count - target.size();
-			output.append(length_to_add, character);
+			const size_t lengthToAdd = count - target.size();
+			output.append(lengthToAdd, character);
 
 			return output;
 		}
