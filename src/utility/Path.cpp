@@ -10,7 +10,7 @@
 #include "core/String.hpp"
 #include "utility/Path.hpp"
 
-#if _MSC_VER > 2000
+#if _MSC_VER > 1900
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
 #else
@@ -23,7 +23,7 @@ namespace fs = std::tr2::sys;
 
 namespace indigo
 {
-#if _MSC_VER < 2000
+#if _MSC_VER < 1900
 	fs::path canonical(const fs::path &path)
 	{
 		char newPath[MAX_PATH]{0};
@@ -34,7 +34,7 @@ namespace indigo
 
 	std::string Path::CurrentDirectory()
 	{		
-#if _MSC_VER < 2000
+#if _MSC_VER < 1900
 		return fs::current_path<fs::path>().string();
 #else
 		return fs::current_path().string();
@@ -44,7 +44,7 @@ namespace indigo
 	// Taken from http://stackoverflow.com/questions/1746136/how-do-i-normalize-a-pathname-using-boostfilesystem
 	std::string Path::Normalize(const std::string &path)
 	{
-#if _MSC_VER > 2000
+#if _MSC_VER > 1900
 		fs::path absPath = absolute(fs::path(path));
 #else
 		fs::path absPath = complete(fs::path(path));
@@ -62,11 +62,19 @@ namespace indigo
 		for (; it != absPath.end(); ++it)
 		{
 			// Just move back on ../
+#if _MSC_VER > 1900
+			if (it->string() == "..")
+				result = result.parent_path();
+			else if (it->string() != ".")
+				// Just cat other path entries
+				result /= *it;
+#else
 			if (*it == "..")
 				result = result.parent_path();
 			else if (*it != ".")
 				// Just cat other path entries
 				result /= *it;
+#endif
 		}
 
 		// Fix path
